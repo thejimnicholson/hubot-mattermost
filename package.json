@@ -1,18 +1,18 @@
 {
     "name": "hubot-mattermost",
-    "version": "1.0.7",
-    "description": "A hubot adapter for mattermost",
-    "homepage": "https: //github.com/renanvicente/hubot-mattermost#readme",
+    "version": "1.0.7a",
+    "description": "A hubot adapter for mattermost that supports attachments",
+    "homepage": "https: //github.com/thejimnicholson/hubot-mattermost#readme",
     "main": "src/mattermost.coffee",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/renanvicente/hubot-mattermost.git"
+        "url": "git+https://github.com/thejimnicholson/hubot-mattermost.git"
     },
     "bugs": {
-        "url": "https://github.com/renanvicente/hubot-mattermost/issues"
+        "url": "https://github.com/thejimnicholson/hubot-mattermost/issues"
     },
     "keywords": [
         "hubot",
@@ -22,16 +22,16 @@
         "webhook"
     ],
     "author": {
-        "name": "Renan Vicente",
-        "email": "renanvice@gmail.com",
-        "url": "https://github.com/renanvicente"
+        "name": "Jim Nicholson",
+        "email": "thejimnicholson@gmail.com",
+        "url": "https://github.com/thejimnicholson"
     },
     "license": "MIT",
     "dependencies": {
         "parent-require": "^1.0.0"
     },
     "devDependencies": {
-        "coffee-script": ">=1.2.0",
+        "coffeescript": ">=1.2.0",
         "hubot": ">=2.3.0"
     }
 }
