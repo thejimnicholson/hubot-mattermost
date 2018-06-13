@@ -7,16 +7,16 @@ catch
 class Mattermost extends Adapter
 
   send: (envelope, strings...) ->
+    envelope.icon_url ?= @icon
+    envelope.channel ?= @channel ? envelope.user?.room ? envelope.room
+    envelope.username ?= @robot.name
     for str in strings
-      data = JSON.stringify({
-        icon_url: @icon,
-        channel: @channel ? envelope.user?.room ? envelope.room, # send back to source channel only if not overwritten,
-        username: @robot.name,
-        text: str
-      })
+      data = envelope
+      data.text = str
+      @robot.logger.info data
       @robot.http(@url)
         .header('Content-Type', 'application/json')
-        .post(data) (err, res, body) ->
+        .post(JSON.stringify(data)) (err, res, body) ->
           if err
             console.log err
 
@@ -33,10 +33,9 @@ class Mattermost extends Adapter
     @tokens = process.env.MATTERMOST_TOKEN
     @channel = process.env.MATTERMOST_CHANNEL
     @endpoint = process.env.MATTERMOST_ENDPOINT
-    @url = process.env.MATTERMOST_INCOME_URL 
-    @icon = process.env.MATTERMOST_ICON_URL 
-    if process.env.MATTERMOST_HUBOT_USERNAME?
-      @robot.name = process.env.MATTERMOST_HUBOT_USERNAME
+    @url = process.env.MATTERMOST_INCOME_URL
+    @icon = process.env.MATTERMOST_ICON_URL
+    @username = process.env.MATTERMOST_HUBOT_USERNAME
     @selfsigned = this.getBool(process.env.MATTERMOST_SELFSIGNED_CERT) if process.env.MATTERMOST_SELFSIGNED_CERT
     if @selfsigned then process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
     unless @tokens?
@@ -50,18 +49,15 @@ class Mattermost extends Adapter
       process.exit 1
     @robot.router.post @endpoint, (req, res) =>
      # split string values by ',' as process.env return type string no matter what has been defined (eg array, string, int)
-     for token in @tokens.split(',')     
+     for token in @tokens.split(',')
        if token is req.body.token
          msg = req.body.text
-         # support for slash commands
-         if req.body.command?
-            msg = req.body.command.replace(/^\//,'') + ' ' + msg
          user = @robot.brain.userForId(req.body.user_id)
          user.name = req.body.user_name
          user.room = req.body.channel_name
          @robot.receive new TextMessage(user, msg)
-         res.writeHead 200, 'Content-Type': 'application/json'
-         res.end('{}')
+         res.writeHead 200, 'Content-Type': 'text/plain'
+         res.end()
 
   getBool: (val) ->
     return !!JSON.parse(String(val).toLowerCase());
