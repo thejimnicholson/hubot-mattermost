@@ -13,7 +13,6 @@ class Mattermost extends Adapter
     for str in strings
       data = envelope
       data.text = str
-      @robot.logger.info data
       @robot.http(@url)
         .header('Content-Type', 'application/json')
         .post(JSON.stringify(data)) (err, res, body) ->
