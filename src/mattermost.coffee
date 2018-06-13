@@ -32,7 +32,7 @@ class Mattermost extends Adapter
     @emit "connected"
     @tokens = process.env.MATTERMOST_TOKEN
     @channel = process.env.MATTERMOST_CHANNEL
-    @endpoint = process.env.MATTERMOST_ENDPOINT
+    @endpoint = process.env.MATTERMOST_ENDPOINT ? '/hubot/incoming'
     @url = process.env.MATTERMOST_INCOME_URL
     @icon = process.env.MATTERMOST_ICON_URL
     @username = process.env.MATTERMOST_HUBOT_USERNAME
