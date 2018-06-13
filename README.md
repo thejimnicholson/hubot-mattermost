@@ -5,20 +5,44 @@
 
 This adapter uses the webhook interface and allows for sending [Mattermost Attachments](https://docs.mattermost.com/developer/message-attachments.html).
 
+This version is a fork of and largely based on an adapter written by [Renan Vicente](https://github.com/renanvicente). It includes slash command support
+written by [Stéphane Alnet](https://github.com/shimaore).
+
 
 ## Installation
 
-* Follow the "[Getting Started With Hubot](https://hubot.github.com/docs/)" guide to get a local installation of Hubot
-* When you run the command `yo hubot` it should ask for an adapter, input "mattermost" so it can download this adapter automatically for you
-* Create an incoming webhook and outgoing webhook integration in your mattermost. You can follow the instructions on [Incoming Webhooks](http://docs.mattermost.com/developer/webhooks-incoming.html#enabling-incoming-webhooks) and [Outgoing Webhooks](http://docs.mattermost.com/developer/webhooks-outgoing.html#enabling-outgoing-webhooks) to setup.
-* Set the environment variables MATTERMOST_ENDPOINT, MATTERMOST_INCOME_URL and MATTERMOST_TOKEN based on your mattermost configuration.
-* ***It's important to remember that if you don't run Hubot alongside with Mattermost (locally) you must ensure that Mattermost instance can connect to the machine where Hubot is installed as it will be running on port 8080***. This is due to Webhooks nature (both Incoming and Outgoing) where a HTTP POST will be send both ways for communication purposes (sending and receiving Mattermost/Hubot messages).
+* Install `yo` and `generator-hubot` globally if you haven't already.
+* Run `yo hubot` as per the [hubot instructions](https://hubot.github.com/docs/). Specify "shell" as the adapter.
+* Once you have a hubot set up, run `npm install git+https://git@github.com/thejimnicholson/hubot-mattermost.git` to install the adapter.
+* Create both an [incoming](https://docs.mattermost.com/developer/webhooks-incoming.html)
+
+   Set the __MATTERMOST_INCOME_URL__ environment variable to the URL for the incoming webhook. It will look something like this:
+
+   `http://mattermost.server:8065/hooks/incoming-token`
+
+* Also create an [outgoing](https://docs.mattermost.com/developer/webhooks-outgoing.html) webhook in Mattermost. The URL should look something like this:
+
+   `http://hubot.hostname:8080/hubot/incoming`
+
+   where `hubot.hostname` is the host name or IP address where hubot will run, `8080` is the port that hubot will listen on, and `/hubot/incoming` is the URL where hubot will receive notifications from Mattermost.
+
+   You can override the path portion by setting the __MATTERMOST_ENDPOINT__ environment variable. The port can be set via the __PORT__ envorinment variable.
+
+   Be sure your Mattermost instance is able to reach the host and port where hubot will be running, and that your hubot instance will also be able to reach Mattermost.
+
+* Set the __MATTERMOST_TOKEN__ environment variable to the token that Mattermost provides when you create the outgoing webhook.
+
+   __Note:__ It is possible to have multiple outgoing webhooks, and in fact it is required if you want your hubot instance to respond to messages from different rooms in Mattermost. If you need to do this, you can provide a comma-separated list of tokens in the __MATTERMOST_TOKEN__ variable.
+
 
 ## Example Installation
 
   ```sh
 npm install -g yo generator-hubot
-yo hubot --adapter mattermost
+mkdir mybot
+cd mybot
+yo hubot --adapter shell
+npm install ggit+https://git@github.com/thejimnicholson/hubot-mattermost.git
   ```
 
 ## Environment variables
@@ -31,7 +55,7 @@ The adapter requires the following environment variables to be defined prior to 
 
 In addition, the following optional variables can be set:
 
-* `MATTERMOST_CHANNEL` _string, default: none_ - Override the channel that you want to reply to.
+* `MATTERMOST_CHANNEL` _string, default: none_ - Override the channel that you want to reply to. This overrides the default channel, but hubot scripts can still target a specific channel if they require it. 
 * `MATTERMOST_ICON_URL` _string, default: none_ - If Enable Overriding of Icon from Webhooks is enabled you can set a url with the icon that you want for your hubot.
 * `MATTERMOST_HUBOT_USERNAME` _string, default: Hubot's name_ - You can set a custom username to respond in mattermost. If Enable Overriding of Usernames from Webhooks, this name is shown in mattermost.
 * `MATTERMOST_SELFSIGNED_CERT` _boolean, default: none_ - If true it will ignore if MATTERMOST_ENDPOINT has a self signed certificate.
