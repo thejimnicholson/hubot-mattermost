@@ -55,7 +55,7 @@ The adapter requires the following environment variables to be defined prior to 
 
 In addition, the following optional variables can be set:
 
-* `MATTERMOST_CHANNEL` _string, default: none_ - Override the channel that you want to reply to. This overrides the default channel, but hubot scripts can still target a specific channel if they require it. 
+* `MATTERMOST_CHANNEL` _string, default: none_ - Override the channel that you want to reply to. This overrides the default channel, but hubot scripts can still target a specific channel if they require it.
 * `MATTERMOST_ICON_URL` _string, default: none_ - If Enable Overriding of Icon from Webhooks is enabled you can set a url with the icon that you want for your hubot.
 * `MATTERMOST_HUBOT_USERNAME` _string, default: Hubot's name_ - You can set a custom username to respond in mattermost. If Enable Overriding of Usernames from Webhooks, this name is shown in mattermost.
 * `MATTERMOST_SELFSIGNED_CERT` _boolean, default: none_ - If true it will ignore if MATTERMOST_ENDPOINT has a self signed certificate.
@@ -71,6 +71,22 @@ export MATTERMOST_HUBOT_USERNAME="matterbot" # optional: if you want to override
 export MATTERMOST_SELFSIGNED_CERT=true # optional: if you want to ignore self signed certificate
 
   ```
+
+## Sending attachments
+
+Mattermost Attachments are supported. The adapter's `send` method has been extended to allow you to pass a full envelope as the first parameter. For example:
+
+```
+robot.respond /give me an attachment/i, (res) ->
+  envelope =
+    username: 'TheBoss'
+    icon_url: 'http://www.someiconfarm.com/theboss.png'
+    attachments: [
+      color: #000080
+      text: "Here's a blue one."
+      fallback: "Here's a blue one that you can't see."
+    ]
+```
 
 ## Example with Hubot sending to multiple specific channels only
 
