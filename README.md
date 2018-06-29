@@ -77,15 +77,18 @@ export MATTERMOST_SELFSIGNED_CERT=true # optional: if you want to ignore self si
 Mattermost Attachments are supported. The adapter's `send` method has been extended to allow you to pass a full envelope as the first parameter. For example:
 
 ```
-robot.respond /give me an attachment/i, (res) ->
+module.exports = (robot) ->
+ robot.respond /give me an attachment/i, (res) ->
   envelope =
     username: 'TheBoss'
+    channel: res.envelope.room
     icon_url: 'http://www.someiconfarm.com/theboss.png'
     attachments: [
-      color: #000080
+      color: "#000080"
       text: "Here's a blue one."
       fallback: "Here's a blue one that you can't see."
     ]
+  robot.send envelope, "Message with attachments"
 ```
 
 ## Example with Hubot sending to multiple specific channels only
